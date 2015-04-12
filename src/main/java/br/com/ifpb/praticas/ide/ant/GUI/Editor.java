@@ -5,6 +5,8 @@
  */
 package br.com.ifpb.praticas.ide.ant.GUI;
 
+import java.awt.Component;
+
 /**
  *
  * @author João Marcos F <joaomarccos.ads@gmail.com>
@@ -16,8 +18,15 @@ public class Editor extends javax.swing.JFrame {
      */
     public Editor() {
         initComponents();
+        OpenNewTab("Arquivo.java", null);
     }
-
+    
+    private void OpenNewTab(String name, Component component){
+        sourceEditor.addTab(name, component);
+        sourceEditor.setSelectedComponent(null);  
+        int i = sourceEditor.getSelectedIndex();  
+        sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,6 +137,8 @@ public class Editor extends javax.swing.JFrame {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        sourceEditor.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
