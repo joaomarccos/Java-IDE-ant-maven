@@ -1,0 +1,16 @@
+Como o projeto eh pequeno e dá pra saber como vai ficar.. achei melhor começar com uma interface basica.. e ir criando as funcionalidades inerentes a ela. 
+
+ateh porque tem mais funcioalidades envolvendo a interface. 
+
+A priori temos as seguites funcionalidades a serem feitas:
+
+-Abrir projeto desktop (menu file)
+-Abrir projeto web (menu file)
+-Abrir arquivo (menu file)
+-Exibir arquivo/projeto na Jtre
+-Adicionar arquivos ao JtablePanel
+-Compilar (menu run)
+-Executar (menu run)
+-Gerar jar (menu run)
+-Gerar war/implantar (menu run)
+-Mostrar log de atividade no console (erros de compilação, implantacão, etc..)
