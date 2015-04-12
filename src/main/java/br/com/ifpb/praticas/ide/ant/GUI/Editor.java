@@ -39,8 +39,6 @@ public class Editor extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         sourceEditor = new javax.swing.JTabbedPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        exampleEditor = new javax.swing.JEditorPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         console = new javax.swing.JTextPane();
         labelConsole = new java.awt.Label();
@@ -58,10 +56,6 @@ public class Editor extends javax.swing.JFrame {
         setTitle("mainFrame");
 
         jScrollPane1.setViewportView(jTree1);
-
-        jScrollPane2.setViewportView(exampleEditor);
-
-        sourceEditor.addTab("tab1", jScrollPane2);
 
         jScrollPane3.setViewportView(console);
 
@@ -185,11 +179,9 @@ public class Editor extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem compile;
     private javax.swing.JTextPane console;
-    private javax.swing.JEditorPane exampleEditor;
     private javax.swing.JMenuItem generateJar;
     private javax.swing.JMenuItem generateWar;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTree jTree1;
     private java.awt.Label labelConsole;
