@@ -34,10 +34,16 @@ public class Editor extends javax.swing.JFrame {
         exampleEditor = new javax.swing.JEditorPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         console = new javax.swing.JTextPane();
-        jLabelconsoleName = new java.awt.Label();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        labelConsole = new java.awt.Label();
+        menuBar = new javax.swing.JMenuBar();
+        menuFile = new javax.swing.JMenu();
+        openProject = new javax.swing.JMenuItem();
+        openFile = new javax.swing.JMenuItem();
+        menuRun = new javax.swing.JMenu();
+        compile = new javax.swing.JMenuItem();
+        runProject = new javax.swing.JMenuItem();
+        generateJar = new javax.swing.JMenuItem();
+        generateWar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("mainFrame");
@@ -50,15 +56,46 @@ public class Editor extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(console);
 
-        jLabelconsoleName.setText("Console");
+        labelConsole.setText("Console");
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        menuFile.setText("File");
 
-        jMenu2.setText("Run");
-        jMenuBar1.add(jMenu2);
+        openProject.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openProject.setText("Open Project");
+        menuFile.add(openProject);
 
-        setJMenuBar(jMenuBar1);
+        openFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        openFile.setText("Open File");
+        menuFile.add(openFile);
+
+        menuBar.add(menuFile);
+
+        menuRun.setText("Run");
+
+        compile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        compile.setText("Compile");
+        menuRun.add(compile);
+
+        runProject.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        runProject.setText("Run Project");
+        menuRun.add(runProject);
+
+        generateJar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
+        generateJar.setText("Generate Jar");
+        generateJar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateJarActionPerformed(evt);
+            }
+        });
+        menuRun.add(generateJar);
+
+        generateWar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
+        generateWar.setText("Generate War");
+        menuRun.add(generateWar);
+
+        menuBar.add(menuRun);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -68,12 +105,14 @@ public class Editor extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sourceEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelconsoleName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 572, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addComponent(sourceEditor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -84,16 +123,18 @@ public class Editor extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(sourceEditor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelconsoleName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        jLabelconsoleName.getAccessibleContext().setAccessibleName("Console");
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void generateJarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateJarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_generateJarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,16 +172,22 @@ public class Editor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem compile;
     private javax.swing.JTextPane console;
     private javax.swing.JEditorPane exampleEditor;
-    private java.awt.Label jLabelconsoleName;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem generateJar;
+    private javax.swing.JMenuItem generateWar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTree jTree1;
+    private java.awt.Label labelConsole;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuFile;
+    private javax.swing.JMenu menuRun;
+    private javax.swing.JMenuItem openFile;
+    private javax.swing.JMenuItem openProject;
+    private javax.swing.JMenuItem runProject;
     private javax.swing.JTabbedPane sourceEditor;
     // End of variables declaration//GEN-END:variables
 }
