@@ -6,6 +6,10 @@
 package br.com.ifpb.praticas.ide.ant.GUI;
 
 import java.awt.Component;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -18,12 +22,14 @@ public class Editor extends javax.swing.JFrame {
      */
     public Editor() {
         initComponents();
-        OpenNewTab("Arquivo.java", null);
+        Component codeArea = new JScrollPane(new JTextPane());
+        OpenNewTab("Arquivo.java", codeArea);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
     
     private void OpenNewTab(String name, Component component){
         sourceEditor.addTab(name, component);
-        sourceEditor.setSelectedComponent(null);  
+        sourceEditor.setSelectedComponent(component);  
         int i = sourceEditor.getSelectedIndex();  
         sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor));
     }
@@ -54,11 +60,17 @@ public class Editor extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("mainFrame");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jScrollPane1.setViewportView(jTree1);
 
         jScrollPane3.setViewportView(console);
 
+        labelConsole.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         labelConsole.setText("Console");
 
         menuFile.setText("File");
@@ -105,15 +117,14 @@ public class Editor extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 572, Short.MAX_VALUE))
-                    .addComponent(sourceEditor))
+                        .addGap(0, 561, Short.MAX_VALUE))
+                    .addComponent(sourceEditor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -124,9 +135,9 @@ public class Editor extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(sourceEditor)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(2, 2, 2)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -139,6 +150,12 @@ public class Editor extends javax.swing.JFrame {
     private void generateJarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateJarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_generateJarActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int caixa = JOptionPane.showConfirmDialog(this, "Você deseja realmente sair?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if(caixa == JOptionPane.YES_OPTION)
+            dispose(); 
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
