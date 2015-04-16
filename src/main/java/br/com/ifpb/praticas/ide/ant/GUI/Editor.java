@@ -6,6 +6,7 @@
 package br.com.ifpb.praticas.ide.ant.GUI;
 
 import java.awt.Component;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -52,6 +53,7 @@ public class Editor extends javax.swing.JFrame {
         menuFile = new javax.swing.JMenu();
         openProject = new javax.swing.JMenuItem();
         openFile = new javax.swing.JMenuItem();
+        save = new javax.swing.JMenuItem();
         menuRun = new javax.swing.JMenu();
         compile = new javax.swing.JMenuItem();
         runProject = new javax.swing.JMenuItem();
@@ -77,11 +79,25 @@ public class Editor extends javax.swing.JFrame {
 
         openProject.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         openProject.setText("Open Project");
+        openProject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openProjectActionPerformed(evt);
+            }
+        });
         menuFile.add(openProject);
 
         openFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         openFile.setText("Open File");
+        openFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileActionPerformed(evt);
+            }
+        });
         menuFile.add(openFile);
+
+        save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        save.setText("Save");
+        menuFile.add(save);
 
         menuBar.add(menuFile);
 
@@ -157,34 +173,34 @@ public class Editor extends javax.swing.JFrame {
             dispose(); 
     }//GEN-LAST:event_formWindowClosing
 
+    private void openProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectActionPerformed
+        JFileChooser fc = new JFileChooser();
+        fc.setMultiSelectionEnabled(false);
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fc.showOpenDialog(null);
+        
+        if(result == JFileChooser.APPROVE_OPTION){
+            String caminho = fc.getSelectedFile().getAbsolutePath();
+            System.out.println(caminho);
+        }
+    }//GEN-LAST:event_openProjectActionPerformed
+
+    private void openFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileActionPerformed
+        JFileChooser fc = new JFileChooser();
+        fc.setMultiSelectionEnabled(false);
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fc.showOpenDialog(null);
+        
+        if(result == JFileChooser.APPROVE_OPTION){
+            String caminho = fc.getSelectedFile().getAbsolutePath();
+            System.out.println(caminho);
+        }
+    }//GEN-LAST:event_openFileActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Editor().setVisible(true);
@@ -207,6 +223,7 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JMenuItem openFile;
     private javax.swing.JMenuItem openProject;
     private javax.swing.JMenuItem runProject;
+    private javax.swing.JMenuItem save;
     private javax.swing.JTabbedPane sourceEditor;
     // End of variables declaration//GEN-END:variables
 }

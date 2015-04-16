@@ -32,7 +32,6 @@
 package br.com.ifpb.praticas.ide.ant.GUI;
 
 import javax.swing.*;
-import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -101,6 +100,7 @@ public class ButtonTabComponent extends JPanel {
             if (i != -1) {
                 pane.remove(i);
             }
+            //Aqui chama um metodo´pra salvar as modificações do arquivo na aba
         }
 
         //we don't want to update UI for this button
