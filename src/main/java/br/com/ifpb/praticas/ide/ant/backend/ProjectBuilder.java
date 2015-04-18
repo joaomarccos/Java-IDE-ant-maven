@@ -24,7 +24,7 @@ public class ProjectBuilder {
      * @throws java.io.IOException
      */
     public String compileSimpleProject(String path) throws IOException {                
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" build";
+        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" build";        
         return runAntCommand(command);                
     }
 
@@ -76,6 +76,13 @@ public class ProjectBuilder {
         while (out.hasNext()) {
             result.append(out.nextLine()).append("\n");
         }
+        
+        out = new Scanner(p.getErrorStream());        
+        while (out.hasNext()) {
+            result.append(out.nextLine()).append("\n");
+        }
+        
+        p.destroy();        
         return result.toString();
     }
     
