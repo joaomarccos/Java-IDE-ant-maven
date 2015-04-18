@@ -12,7 +12,7 @@ public class Test {
     public static void main(String[] args) {
         try {
             ProjectBuilder p = new ProjectBuilder();
-            String path = "/home/joaomarcos/Desktop/Project";
+            String path = "C:/Users/Rafael/Desktop/Rafael/IFPB/ADS/P5/Projeto";
             System.out.println(p.compileSimpleProject(path));
         } catch (IOException ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);

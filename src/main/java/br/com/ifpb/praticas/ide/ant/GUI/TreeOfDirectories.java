@@ -7,19 +7,23 @@
 package br.com.ifpb.praticas.ide.ant.GUI;
 
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 /**
- *
+ * @author João Marcos F 
  * @author Rafael
  */
 public class TreeOfDirectories implements TreeModel{
 
-    private File root;
+    private TreeFile root;
+    private ArrayList<TreeModelListener> list; 
     
-    public TreeOfDirectories() {
+    public TreeOfDirectories(String path) {
+        this.root = new TreeFile(path);
+        this.list = new ArrayList<>();
     }
     
     @Override
@@ -29,17 +33,26 @@ public class TreeOfDirectories implements TreeModel{
 
     @Override
     public Object getChild(Object parent, int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            TreeFile directory = (TreeFile) parent;
+            String[] children = directory.list();
+            return new TreeFile(directory, children[index]);
     }
 
     @Override
     public int getChildCount(Object parent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TreeFile file = (TreeFile) parent;
+        if (file.isDirectory()) {
+        String[] fileList = file.list();
+        if (fileList != null)
+            return file.list().length;
+        }
+        return 0;
     }
 
     @Override
     public boolean isLeaf(Object node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TreeFile file = (TreeFile) node;
+        return file.isFile();
     }
 
     @Override
@@ -49,17 +62,25 @@ public class TreeOfDirectories implements TreeModel{
 
     @Override
     public int getIndexOfChild(Object parent, Object child) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TreeFile directory = (TreeFile) parent;
+        TreeFile file = (TreeFile) child;
+        String[] children = directory.list();
+        for (int i = 0; i < children.length; i++) {
+            if (file.getName().equals(children[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public void addTreeModelListener(TreeModelListener l) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        list.add(l);
     }
 
     @Override
     public void removeTreeModelListener(TreeModelListener l) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        list.remove(l);
     }
     
 }

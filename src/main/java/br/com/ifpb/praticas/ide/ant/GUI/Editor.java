@@ -6,31 +6,44 @@
 package br.com.ifpb.praticas.ide.ant.GUI;
 
 import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.TreePath;
+
 
 /**
  *
  * @author João Marcos F <joaomarccos.ads@gmail.com>
+ * @author Rafael
  */
 public class Editor extends javax.swing.JFrame {
-
+    private Component codeArea;
+    private String directory_path;
     /**
      * Creates new form Editor
      */
     public Editor() {
         initComponents();
-        Component codeArea = new JScrollPane(new JTextPane());
-        OpenNewTab("Arquivo.java", codeArea);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
     
-    private void OpenNewTab(String name, Component component){
-        sourceEditor.addTab(name, component);
-        sourceEditor.setSelectedComponent(component);  
+    /**
+     * Método para abrir uma nova guia.
+     * @param name
+     * @param code 
+     */
+    private void OpenNewTab(String name, String code){
+        this.codeArea = new JScrollPane(new JTextArea(code));
+        sourceEditor.addTab(name, codeArea);
+        sourceEditor.setSelectedComponent(codeArea);  
         int i = sourceEditor.getSelectedIndex();  
         sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor));
     }
@@ -61,13 +74,18 @@ public class Editor extends javax.swing.JFrame {
         generateWar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("mainFrame");
+        setTitle("Ant-Ide");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
+        jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTree1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTree1);
 
         jScrollPane3.setViewportView(console);
@@ -97,6 +115,11 @@ public class Editor extends javax.swing.JFrame {
 
         save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         save.setText("Save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
         menuFile.add(save);
 
         menuBar.add(menuFile);
@@ -105,10 +128,20 @@ public class Editor extends javax.swing.JFrame {
 
         compile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         compile.setText("Compile");
+        compile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compileActionPerformed(evt);
+            }
+        });
         menuRun.add(compile);
 
         runProject.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         runProject.setText("Run Project");
+        runProject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runProjectActionPerformed(evt);
+            }
+        });
         menuRun.add(runProject);
 
         generateJar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
@@ -122,6 +155,11 @@ public class Editor extends javax.swing.JFrame {
 
         generateWar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
         generateWar.setText("Generate War");
+        generateWar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateWarActionPerformed(evt);
+            }
+        });
         menuRun.add(generateWar);
 
         menuBar.add(menuRun);
@@ -166,13 +204,19 @@ public class Editor extends javax.swing.JFrame {
     private void generateJarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateJarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_generateJarActionPerformed
-
+    /**
+     * Método para fechar a janela
+     * @param evt 
+     */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int caixa = JOptionPane.showConfirmDialog(this, "Você deseja realmente sair?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if(caixa == JOptionPane.YES_OPTION)
             dispose(); 
     }//GEN-LAST:event_formWindowClosing
-
+    /**
+     * Método pra abrir um diretório
+     * @param evt 
+     */
     private void openProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectActionPerformed
         JFileChooser fc = new JFileChooser();
         fc.setMultiSelectionEnabled(false);
@@ -180,11 +224,14 @@ public class Editor extends javax.swing.JFrame {
         int result = fc.showOpenDialog(null);
         
         if(result == JFileChooser.APPROVE_OPTION){
-            String caminho = fc.getSelectedFile().getAbsolutePath();
-            System.out.println(caminho);
+            directory_path = fc.getSelectedFile().getAbsolutePath();
+            jTree1.setModel(new TreeOfDirectories(directory_path));
         }
     }//GEN-LAST:event_openProjectActionPerformed
-
+    /**
+     * Método para abrir um arquivo
+     * @param evt 
+     */
     private void openFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileActionPerformed
         JFileChooser fc = new JFileChooser();
         fc.setMultiSelectionEnabled(false);
@@ -192,10 +239,44 @@ public class Editor extends javax.swing.JFrame {
         int result = fc.showOpenDialog(null);
         
         if(result == JFileChooser.APPROVE_OPTION){
-            String caminho = fc.getSelectedFile().getAbsolutePath();
-            System.out.println(caminho);
+            directory_path = fc.getSelectedFile().getAbsolutePath();
+            jTree1.setModel(new TreeOfDirectories(directory_path));
         }
     }//GEN-LAST:event_openFileActionPerformed
+    /**
+     * Método que recebe um evento de click do mouse em um arquivo, depois lê o 
+     * texto do arquivo selecionado e faz a chamada do método que abre uma  nova
+     * aba para a edição.
+     * @param evt 
+     */
+    private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
+        if(evt.getClickCount() > 1){
+            File file = (File) jTree1.getLastSelectedPathComponent();
+            String dados;
+            try {
+                dados = new String(Files.readAllBytes(file.toPath()));
+                OpenNewTab(file.getName(), dados);
+            } catch (IOException ex) {
+                Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jTree1MouseClicked
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_compileActionPerformed
+
+    private void runProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runProjectActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_runProjectActionPerformed
+
+    private void generateWarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateWarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_generateWarActionPerformed
 
     /**
      * @param args the command line arguments
