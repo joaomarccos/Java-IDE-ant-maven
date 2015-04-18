@@ -26,7 +26,7 @@ import javax.swing.tree.TreePath;
  */
 public class Editor extends javax.swing.JFrame {
     private Component codeArea;
-    private String directory_path;
+    private String directory_path;    
     /**
      * Creates new form Editor
      */
@@ -81,6 +81,8 @@ public class Editor extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Open files");
+        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTree1MouseClicked(evt);
@@ -267,7 +269,7 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_saveActionPerformed
 
     private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_compileActionPerformed
 
     private void runProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runProjectActionPerformed
