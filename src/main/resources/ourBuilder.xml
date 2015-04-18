@@ -22,6 +22,7 @@
   <target name="clear" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
     <delete dir="${build.dir}" />          
     <mkdir dir="${build.dir}" />
+    <mkdir dir="${src.dir}/resource"/>
   </target>
 
   <target name="build" description="Compila classes java" depends="clear">
