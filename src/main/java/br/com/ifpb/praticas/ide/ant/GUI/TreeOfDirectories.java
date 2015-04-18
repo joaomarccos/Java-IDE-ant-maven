@@ -6,7 +6,6 @@
 
 package br.com.ifpb.praticas.ide.ant.GUI;
 
-import java.io.File;
 import java.util.ArrayList;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -33,9 +32,9 @@ public class TreeOfDirectories implements TreeModel{
 
     @Override
     public Object getChild(Object parent, int index) {
-            TreeFile directory = (TreeFile) parent;
-            String[] children = directory.list();
-            return new TreeFile(directory, children[index]);
+        TreeFile directory = (TreeFile) parent;
+        String[] children = directory.list();
+        return new TreeFile(directory, children[index]);
     }
 
     @Override

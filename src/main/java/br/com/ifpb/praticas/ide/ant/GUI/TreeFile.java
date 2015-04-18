@@ -9,7 +9,9 @@ package br.com.ifpb.praticas.ide.ant.GUI;
 import java.io.File;
 
 /**
- *
+ * Classe criada para que quando o arquivo seja exibido na tela apenas o seu 
+ * nome apareça e não o caminho completo do arquivo, a única modificação é no 
+ * método toString, que agora retorna apenas o nome do arquivo.
  * @author Rafael
  */
 class TreeFile extends File{
@@ -18,7 +20,7 @@ class TreeFile extends File{
       super(parent, child);
     }
 
-    TreeFile(String path) {
+    public TreeFile(String path) {
         super(path);
     }
  
