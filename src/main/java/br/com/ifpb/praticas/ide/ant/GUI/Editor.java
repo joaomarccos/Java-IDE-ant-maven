@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -17,22 +18,23 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-
-
 /**
  *
  * @author João Marcos F <joaomarccos.ads@gmail.com>
  * @author Rafael
+ * 
  */
 public class Editor extends javax.swing.JFrame {
     private Component codeArea;
     private String directory_path;    
+    private ArrayList listOftabsOpen;
     /**
      * Creates new form Editor
      */
     public Editor() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.listOftabsOpen = new ArrayList();
     }
     
     /**
@@ -45,8 +47,9 @@ public class Editor extends javax.swing.JFrame {
         sourceEditor.addTab(name, codeArea);
         sourceEditor.setSelectedComponent(codeArea);  
         int i = sourceEditor.getSelectedIndex();  
-        sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor));
+        sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor, listOftabsOpen));
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,9 +62,9 @@ public class Editor extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         sourceEditor = new javax.swing.JTabbedPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        console = new javax.swing.JTextPane();
         labelConsole = new java.awt.Label();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        console = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         openProject = new javax.swing.JMenuItem();
@@ -90,10 +93,12 @@ public class Editor extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTree1);
 
-        jScrollPane3.setViewportView(console);
-
         labelConsole.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         labelConsole.setText("Output");
+
+        console.setColumns(20);
+        console.setRows(5);
+        jScrollPane2.setViewportView(console);
 
         menuFile.setText("File");
 
@@ -177,9 +182,11 @@ public class Editor extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sourceEditor, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE))
+                    .addComponent(sourceEditor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -193,7 +200,7 @@ public class Editor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelConsole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -253,6 +260,11 @@ public class Editor extends javax.swing.JFrame {
     private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
         if(evt.getClickCount() > 1){
             File file = (File) jTree1.getLastSelectedPathComponent();
+            if(listOftabsOpen.contains(file.getAbsoluteFile())){
+                sourceEditor.grabFocus();
+                return;
+            }
+            listOftabsOpen.add(file.getAbsoluteFile());
             String dados;
             try {
                 dados = new String(Files.readAllBytes(file.toPath()));
@@ -264,7 +276,7 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_jTree1MouseClicked
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_saveActionPerformed
 
     private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed
@@ -282,11 +294,11 @@ public class Editor extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem compile;
-    private javax.swing.JTextPane console;
+    private javax.swing.JTextArea console;
     private javax.swing.JMenuItem generateJar;
     private javax.swing.JMenuItem generateWar;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTree jTree1;
     private java.awt.Label labelConsole;
     private javax.swing.JMenuBar menuBar;

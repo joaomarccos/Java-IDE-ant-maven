@@ -31,10 +31,11 @@
 
 package br.com.ifpb.praticas.ide.ant.GUI;
 
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 /**
  * Component to be used as tabComponent;
@@ -43,14 +44,16 @@ import java.awt.event.*;
  */ 
 public class ButtonTabComponent extends JPanel {
     private final JTabbedPane pane;
+    private final ArrayList list;
 
-    public ButtonTabComponent(final JTabbedPane pane) {
+    public ButtonTabComponent(final JTabbedPane pane, final ArrayList list) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
         if (pane == null) {
             throw new NullPointerException("TabbedPane is null");
         }
         this.pane = pane;
+        this.list = list;
         setOpaque(false);
         
         //make JLabel read titles from JTabbedPane
@@ -99,7 +102,9 @@ public class ButtonTabComponent extends JPanel {
             int i = pane.indexOfTabComponent(ButtonTabComponent.this);
             if (i != -1) {
                 pane.remove(i);
+                list.remove(i);
             }
+            
             //Aqui chama um metodo´pra salvar as modificações do arquivo na aba
         }
 
