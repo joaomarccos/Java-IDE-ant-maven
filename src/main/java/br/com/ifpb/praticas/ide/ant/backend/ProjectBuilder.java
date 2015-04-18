@@ -76,13 +76,6 @@ public class ProjectBuilder {
         while (out.hasNext()) {
             result.append(out.nextLine()).append("\n");
         }
-        
-        out = new Scanner(p.getErrorStream());        
-        while (out.hasNext()) {
-            result.append(out.nextLine()).append("\n");
-        }
-        
-        p.destroy();    
         return result.toString();
     }
     

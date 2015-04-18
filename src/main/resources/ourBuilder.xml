@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<project  name="IDE-Ant" basedir="." default="criarTarget">
+<project  name="segunaparte" basedir="." default="criarTarget">
 
   <property name="build.dir" location="target" />
   <property name="src.dir" location="src" />
@@ -22,13 +22,12 @@
   <target name="clear" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
     <delete dir="${build.dir}" />          
     <mkdir dir="${build.dir}" />
-    <mkdir dir="${src.dir}/resources"/>
-    <mkdir dir="${lib.dir}"/>
+    <mkdir dir="${src.dir}/resource"/>
   </target>
 
   <target name="build" description="Compila classes java" depends="clear">
     <copy todir="${build.dir}">
-      <fileset dir="${src.dir}/resources" includes="**/*"/>
+      <fileset dir="${src.dir}/resource" includes="**/*"/>
     </copy>          
     <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="true" classpathref="libs"/>    
   </target>
@@ -40,7 +39,7 @@
     <mkdir dir="${build.dir}/classes" />
     <javac srcdir="${src.dir}/java" destdir="${build.dir}/classes" includeantruntime="true" classpathref="libs"/>
     <copy todir="${build.dir}/classes">
-      <fileset dir="${src.dir}/resources" includes="**/*" />
+      <fileset dir="${src.dir}/resource" includes="**/*" />
     </copy>
     <copy todir="${build.dir}/webapp/WEB-INF/classes">
       <fileset dir="${build.dir}/classes" includes="**/*" />
