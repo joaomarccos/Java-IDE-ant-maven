@@ -6,10 +6,7 @@ package br.com.ifpb.praticas.ide.ant.GUI;
  */
 public class Loader {
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Editor().setVisible(true);
-            }
-        });
+        Editor editor = new Editor();
+        editor.setVisible(true);
     }
 }
