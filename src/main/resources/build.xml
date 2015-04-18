@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<project  name="segunaparte" basedir="." default="criarTarget">
+
+  <property name="build.dir" location="target" />
+  <property name="src.dir" location="src" />
+  <property name="lib.dir" location="lib" />
+
+  <path id="libs">
+    <fileset dir="${lib.dir}" includes="*.jar" />
+  </path>
+  
+  <tstamp>
+    <format property="hora" pattern="hh-mm-ss" locale="br"/>
+    <format property="data" pattern="dd-MM-yyyy" locale="br"/>
+  </tstamp>
+
+  <target name="criarTarget">
+    <mkdir dir="${build.dir}" />
+  </target>
+  
+  <target name="clear" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
+    <delete dir="${build.dir}" />          
+    <mkdir dir="${build.dir}" />
+  </target>
+
+  <target name="build" description="Compila classes java" depends="clear">
+    <copy todir="${build.dir}">
+      <fileset dir="${src.dir}/resource" includes="**/*"/>
+    </copy>          
+    <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="true" classpathref="libs"/>    
+  </target>
+  
+  <target name="buildWeb" depends="clear">
+    <copy todir="${build.dir}/webapp">
+      <fileset dir="${src.dir}/webapp" includes="**/*" />
+    </copy>
+    <mkdir dir="${build.dir}/classes" />
+    <javac srcdir="${src.dir}/java" destdir="${build.dir}/classes" includeantruntime="true" classpathref="libs"/>
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${src.dir}/resource" includes="**/*" />
+    </copy>
+    <copy todir="${build.dir}/webapp/WEB-INF/classes">
+      <fileset dir="${build.dir}/classes" includes="**/*" />
+    </copy>    
+    <copy todir="${build.dir}/webapp/WEB-INF/lib">
+      <fileset dir="lib"></fileset>
+    </copy>
+      
+  </target>
+
+  <target name="packageJar" depends="build">
+    <jar destfile="qualquer.jar" update="true" basedir="${build.dir}">
+      <manifest>
+        <attribute name="Main-class" value="${Main}" />        
+      </manifest>      
+    </jar>
+  </target>
+  
+  <target name="packageWar">
+    <war destfile="${build.dir}/app_${data}_${hora}.war" webxml="${src.dir}/webapp/WEB-INF/web.xml" update="true"/>
+  </target>
+
+  <target name="executeJar" depends="packageJar">
+    <java jar="qualquer.jar" fork="true"/>
+  </target>
+
+  <target name="deploy" depends="packageWar">
+    <copy todir="${server}">
+      <fileset dir="${build.dir}/" includes="webapp/**/*"/>
+    </copy>
+  </target>
+    
+  <target name="javadoc">
+    <mkdir dir="site" />
+    <mkdir dir="tmp" />
+    <copy todir="tmp">
+      <fileset dir="${src.dir}">
+        <include name="**/*.java" />
+      </fileset>
+    </copy>
+    <javadoc destdir="site" sourcepath="tmp"/>
+    <delete dir="tmp" />
+  </target>
+  
+</project>
