@@ -46,13 +46,13 @@
       <fileset dir="${build.dir}/classes" includes="**/*" />
     </copy>    
     <copy todir="${build.dir}/webapp/WEB-INF/lib">
-      <fileset dir="lib"></fileset>
+      <fileset dir="lib" includes="*.jar"></fileset>
     </copy>
       
   </target>
 
   <target name="packageJar" depends="build">
-    <jar destfile="qualquer.jar" update="true" basedir="${build.dir}">
+    <jar destfile="${project.name}.jar" update="true" basedir="${build.dir}">
       <manifest>
         <attribute name="Main-class" value="${Main}" />        
       </manifest>      
@@ -60,11 +60,17 @@
   </target>
   
   <target name="packageWar">
-    <war destfile="${build.dir}/app_${data}_${hora}.war" webxml="${src.dir}/webapp/WEB-INF/web.xml" update="true"/>
+    <war destfile="${project.name}_${data}_${hora}.war" webxml="${src.dir}/main/webapp/WEB-INF/web.xml" update="true">
+        <fileset dir="${src.dir}/main/webapp">
+            <include name="**/*.*"/>
+        </fileset>
+        <lib dir="lib"/>
+        <classes dir="target"/>
+    </war>
   </target>
 
-  <target name="executeJar" depends="packageJar">
-    <java jar="qualquer.jar" fork="true"/>
+  <target name="executeJar">
+    <java jar="${project.name}.jar" fork="true"/>
   </target>
 
   <target name="deploy" depends="packageWar">

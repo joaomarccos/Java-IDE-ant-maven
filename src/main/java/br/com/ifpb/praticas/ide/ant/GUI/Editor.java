@@ -5,11 +5,14 @@
  */
 package br.com.ifpb.praticas.ide.ant.GUI;
 
+import br.com.ifpb.praticas.ide.ant.backend.ProjectBuilder;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,12 +26,15 @@ import javax.swing.JTextArea;
  *
  * @author João Marcos F <joaomarccos.ads@gmail.com>
  * @author Rafael
- * 
+ *
  */
 public class Editor extends javax.swing.JFrame {
+
     private Component codeArea;
-    private String directory_path;    
+    private String directory_path;
     private ArrayList listOftabsOpen;
+    private ProjectBuilder projectBuilder;
+
     /**
      * Creates new form Editor
      */
@@ -36,21 +42,31 @@ public class Editor extends javax.swing.JFrame {
         initComponents();
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.listOftabsOpen = new ArrayList();
+        this.menuRun.setEnabled(false);
     }
-    
+
+    public void setProjectBuilder(ProjectBuilder projectBuilder) {
+        this.projectBuilder = projectBuilder;
+    }
+
+    private void enableMenu() {
+        this.menuRun.setEnabled(true);
+    }
+
     /**
      * Método para abrir uma nova guia.
+     *
      * @param name
-     * @param code 
+     * @param code
      */
-    private void OpenNewTab(String name, String code){
+    private void OpenNewTab(String name, String code) {
         this.codeArea = new JScrollPane(new JTextArea(code));
         sourceEditor.addTab(name, codeArea);
-        sourceEditor.setSelectedComponent(codeArea);  
-        int i = sourceEditor.getSelectedIndex();  
+        sourceEditor.setSelectedComponent(codeArea);
+        int i = sourceEditor.getSelectedIndex();
         sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor, listOftabsOpen));
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -69,7 +85,6 @@ public class Editor extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         openProject = new javax.swing.JMenuItem();
-        openFile = new javax.swing.JMenuItem();
         save = new javax.swing.JMenuItem();
         menuRun = new javax.swing.JMenu();
         compile = new javax.swing.JMenuItem();
@@ -97,6 +112,7 @@ public class Editor extends javax.swing.JFrame {
         labelConsole.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         labelConsole.setText("Output");
 
+        console.setEditable(false);
         console.setColumns(20);
         console.setRows(5);
         jScrollPane2.setViewportView(console);
@@ -111,15 +127,6 @@ public class Editor extends javax.swing.JFrame {
             }
         });
         menuFile.add(openProject);
-
-        openFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        openFile.setText("Open File");
-        openFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openFileActionPerformed(evt);
-            }
-        });
-        menuFile.add(openFile);
 
         save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         save.setText("Save");
@@ -144,7 +151,7 @@ public class Editor extends javax.swing.JFrame {
         menuRun.add(compile);
 
         runProject.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        runProject.setText("Run Project");
+        runProject.setText("Run Project (jar)");
         runProject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProjectActionPerformed(evt);
@@ -211,57 +218,68 @@ public class Editor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void generateJarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateJarActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Selecione a classe principal", "IDE-Ant", JOptionPane.INFORMATION_MESSAGE);
+        JFileChooser fc = new JFileChooser(directory_path);
+        fc.setMultiSelectionEnabled(false);
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fc.showOpenDialog(null);
+        String mainClass = null;
+        if (result == JFileChooser.APPROVE_OPTION) {
+            mainClass = fc.getSelectedFile().getAbsolutePath();
+            if (!mainClass.endsWith("java")) {
+                JOptionPane.showMessageDialog(this, "É preciso selecionar a classe principal correta!", "IDE-Ant", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    Path main = Paths.get(mainClass);
+                    mainClass = main.getName(main.getNameCount() - 2) + "." + main.getFileName().toString().substring(0, main.getFileName().toString().length() - 5);
+                    console.setText(projectBuilder.buildSimpleProject(directory_path, mainClass));
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
+            }
+        }
     }//GEN-LAST:event_generateJarActionPerformed
     /**
      * Método para fechar a janela
-     * @param evt 
+     *
+     * @param evt
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int caixa = JOptionPane.showConfirmDialog(this, "Você deseja realmente sair?", "Confirmação", JOptionPane.YES_NO_OPTION);
-        if(caixa == JOptionPane.YES_OPTION)
-            dispose(); 
+        if (caixa == JOptionPane.YES_OPTION) {
+            dispose();
+        }
     }//GEN-LAST:event_formWindowClosing
     /**
      * Método pra abrir um diretório
-     * @param evt 
+     *
+     * @param evt
      */
     private void openProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectActionPerformed
         JFileChooser fc = new JFileChooser();
         fc.setMultiSelectionEnabled(false);
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int result = fc.showOpenDialog(null);
-        
-        if(result == JFileChooser.APPROVE_OPTION){
+
+        if (result == JFileChooser.APPROVE_OPTION) {
             directory_path = fc.getSelectedFile().getAbsolutePath();
             jTree1.setModel(new TreeOfDirectories(directory_path));
+            enableMenu();
+            console.setText("");
         }
     }//GEN-LAST:event_openProjectActionPerformed
-    /**
-     * Método para abrir um arquivo
-     * @param evt 
-     */
-    private void openFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileActionPerformed
-        JFileChooser fc = new JFileChooser();
-        fc.setMultiSelectionEnabled(false);
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int result = fc.showOpenDialog(null);
-        
-        if(result == JFileChooser.APPROVE_OPTION){
-            directory_path = fc.getSelectedFile().getAbsolutePath();
-            jTree1.setModel(new TreeOfDirectories(directory_path));
-        }
-    }//GEN-LAST:event_openFileActionPerformed
-    /**
-     * Método que recebe um evento de click do mouse em um arquivo, depois lê o 
-     * texto do arquivo selecionado e faz a chamada do método que abre uma  nova
+
+   /**
+     * Método que recebe um evento de click do mouse em um arquivo, depois lê o
+     * texto do arquivo selecionado e faz a chamada do método que abre uma nova
      * aba para a edição.
-     * @param evt 
+     *
+     * @param evt
      */
     private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
-        if(evt.getClickCount() > 1){
+        if (evt.getClickCount() > 1) {
             File file = (File) jTree1.getLastSelectedPathComponent();
-            if(listOftabsOpen.contains(file.getAbsoluteFile())){
+            if (listOftabsOpen.contains(file.getAbsoluteFile())) {
                 sourceEditor.grabFocus();
                 return;
             }
@@ -277,21 +295,38 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_jTree1MouseClicked
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        
+
     }//GEN-LAST:event_saveActionPerformed
 
     private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed
-        
+        Path path = Paths.get(directory_path + "src/main/webapp");
+        try {
+            if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+                console.setText(projectBuilder.compileSimpleProject(directory_path));
+            } else {
+                console.setText(projectBuilder.compileWebProject(directory_path));
+            }
+        } catch (IOException ex) {
+            console.setText(ex.getMessage());
+        }
     }//GEN-LAST:event_compileActionPerformed
 
     private void runProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runProjectActionPerformed
-        // TODO add your handling code here:
+        try {
+            console.setText(projectBuilder.executeJar(directory_path));
+        } catch (IOException ex) {
+            console.setText(ex.getMessage());
+        }
     }//GEN-LAST:event_runProjectActionPerformed
 
     private void generateWarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateWarActionPerformed
-        // TODO add your handling code here:
+        try {
+            console.setText(projectBuilder.buildWebProject(directory_path));
+        } catch (IOException ex) {
+            console.setText(ex.getMessage());
+        }
     }//GEN-LAST:event_generateWarActionPerformed
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem compile;
@@ -305,7 +340,6 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenu menuRun;
-    private javax.swing.JMenuItem openFile;
     private javax.swing.JMenuItem openProject;
     private javax.swing.JMenuItem runProject;
     private javax.swing.JMenuItem save;

@@ -43,11 +43,23 @@ public class ProjectBuilder {
     /**
      * Generate a jar package from the opened project on editor
      * @param path - path of the project
+     * @param mainClass - Main class that will be used on Manifest.xml
      * @return - String containing a sucess or error message related-project
      * @throws java.io.IOException
      */
-    public String buildSimpleProject(String path) throws IOException {
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" packageJar";
+    public String buildSimpleProject(String path, String mainClass) throws IOException {
+        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" -DMain="+mainClass+" -Dproject.name="+getProjectName(path)+" packageJar";
+        return runAntCommand(command);                
+    }
+    
+    /**
+     * Execute a jar file
+     * @param path
+     * @return
+     * @throws IOException 
+     */
+    public String executeJar(String path) throws IOException {
+        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" -Dproject.name=\""+path+"/"+getProjectName(path)+"\" executeJar";
         return runAntCommand(command);                
     }
 
@@ -57,8 +69,8 @@ public class ProjectBuilder {
      * @return - String containing a sucess or error message related-project
      * @throws java.io.IOException
      */
-    public String executeWebProject(String path) throws IOException {
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" packageWar";
+    public String buildWebProject(String path) throws IOException {
+        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" -Dproject.name="+getProjectName(path)+" packageWar";
         return runAntCommand(command);                
     }
     
@@ -96,6 +108,11 @@ public class ProjectBuilder {
     private static Path copyBuildXmlToProjectPath(String path) throws IOException{
         Path projectDirectory = Paths.get(path+"/"+BUILDXMLNAME);                        
         return Files.copy(PATHBUILDXML, projectDirectory, StandardCopyOption.REPLACE_EXISTING);
+    }
+    
+    private String getProjectName(String path){
+        Path name = Paths.get(path);
+        return name.getFileName().toString();
     }
 
 }
