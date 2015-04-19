@@ -15,6 +15,7 @@ public class ProjectBuilder {
     
     private static final String BUILDXMLNAME = "ourBuilder.xml";
     private static final Path PATHBUILDXML = Paths.get("./src/main/resources/"+BUILDXMLNAME);    
+    private String ourBuildPath;
 
     /**
      * Compile a simple project opened on editor
@@ -24,7 +25,7 @@ public class ProjectBuilder {
      * @throws java.io.IOException
      */
     public String compileSimpleProject(String path) throws IOException {                
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" build";
+        String command = "ant -buildfile \""+ourBuildPath+"\" build";
         return runAntCommand(command);                
     }
 
@@ -36,7 +37,7 @@ public class ProjectBuilder {
      * @throws java.io.IOException
      */
     public String compileWebProject(String path) throws IOException {
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" buildWeb";
+        String command = "ant -buildfile \""+ourBuildPath+"\" buildWeb";
         return runAntCommand(command);                
     }
 
@@ -48,7 +49,7 @@ public class ProjectBuilder {
      * @throws java.io.IOException
      */
     public String buildSimpleProject(String path, String mainClass) throws IOException {
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" -DMain="+mainClass+" -Dproject.name="+getProjectName(path)+" packageJar";
+        String command = "ant -buildfile \""+ourBuildPath+"\" -DMain="+mainClass+" -Dproject.name="+getProjectName(path)+" packageJar";
         return runAntCommand(command);                
     }
     
@@ -59,7 +60,7 @@ public class ProjectBuilder {
      * @throws IOException 
      */
     public String executeJar(String path) throws IOException {
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" -Dproject.name=\""+path+"/"+getProjectName(path)+"\" executeJar";
+        String command = "ant -buildfile \""+ourBuildPath+"\" -Dproject.name=\""+path+"/"+getProjectName(path)+"\" executeJar";
         return runAntCommand(command);                
     }
 
@@ -70,7 +71,7 @@ public class ProjectBuilder {
      * @throws java.io.IOException
      */
     public String buildWebProject(String path) throws IOException {
-        String command = "ant -buildfile \""+copyBuildXmlToProjectPath(path).toString()+"\" -Dproject.name="+getProjectName(path)+" packageWar";
+        String command = "ant -buildfile \""+ourBuildPath+"\" -Dproject.name="+getProjectName(path)+" packageWar";
         return runAntCommand(command);                
     }
     
@@ -81,6 +82,7 @@ public class ProjectBuilder {
      * @throws IOException 
      */
     private static String runAntCommand(String command) throws IOException{
+
         Runtime r = Runtime.getRuntime();
         Process p = r.exec(command);
         Scanner out = new Scanner(p.getInputStream());
@@ -102,12 +104,11 @@ public class ProjectBuilder {
      * Copy the xml file used for this application to the project directory
      * opened on editor
      * @param path
-     * @return - Path of the xml file copied
      * @throws IOException 
      */
-    private static Path copyBuildXmlToProjectPath(String path) throws IOException{
+    public void copyBuildXmlToProjectPath(String path) throws IOException{
         Path projectDirectory = Paths.get(path+"/"+BUILDXMLNAME);                        
-        return Files.copy(PATHBUILDXML, projectDirectory, StandardCopyOption.REPLACE_EXISTING);
+        this.ourBuildPath = Files.copy(PATHBUILDXML, projectDirectory, StandardCopyOption.REPLACE_EXISTING).toString();
     }
     
     private String getProjectName(String path){

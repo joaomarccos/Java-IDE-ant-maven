@@ -218,26 +218,36 @@ public class Editor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void generateJarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateJarActionPerformed
-        JOptionPane.showMessageDialog(this, "Selecione a classe principal", "IDE-Ant", JOptionPane.INFORMATION_MESSAGE);
-        JFileChooser fc = new JFileChooser(directory_path);
-        fc.setMultiSelectionEnabled(false);
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int result = fc.showOpenDialog(null);
-        String mainClass = null;
-        if (result == JFileChooser.APPROVE_OPTION) {
-            mainClass = fc.getSelectedFile().getAbsolutePath();
-            if (!mainClass.endsWith("java")) {
-                JOptionPane.showMessageDialog(this, "É preciso selecionar a classe principal correta!", "IDE-Ant", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    Path main = Paths.get(mainClass);
-                    mainClass = main.getName(main.getNameCount() - 2) + "." + main.getFileName().toString().substring(0, main.getFileName().toString().length() - 5);
-                    console.setText(projectBuilder.buildSimpleProject(directory_path, mainClass));
-                } catch (IOException ex) {
-                    console.setText(ex.getMessage());
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null, "Selecione a classe principal", "IDE-Ant", JOptionPane.INFORMATION_MESSAGE);
+                JFileChooser fc = new JFileChooser(directory_path);
+                fc.setMultiSelectionEnabled(false);
+                fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int result = fc.showOpenDialog(null);
+                String mainClass = null;
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    mainClass = fc.getSelectedFile().getAbsolutePath();
+                    if (!mainClass.endsWith("java")) {
+                        JOptionPane.showMessageDialog(null, "É preciso selecionar a classe principal correta!", "IDE-Ant", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        try {
+                            Path main = Paths.get(mainClass);
+                            mainClass = main.getName(main.getNameCount() - 2) + "." + main.getFileName().toString().substring(0, main.getFileName().toString().length() - 5);
+                            console.setText(projectBuilder.buildSimpleProject(directory_path, mainClass));
+                        } catch (IOException ex) {
+                            console.setText(ex.getMessage());
+                        }
+                    }
                 }
             }
-        }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+
     }//GEN-LAST:event_generateJarActionPerformed
     /**
      * Método para fechar a janela
@@ -264,12 +274,17 @@ public class Editor extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             directory_path = fc.getSelectedFile().getAbsolutePath();
             jTree1.setModel(new TreeOfDirectories(directory_path));
+            try {
+                this.projectBuilder.copyBuildXmlToProjectPath(directory_path);
+            } catch (IOException ex) {
+                Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+            }
             enableMenu();
             console.setText("");
         }
     }//GEN-LAST:event_openProjectActionPerformed
 
-   /**
+    /**
      * Método que recebe um evento de click do mouse em um arquivo, depois lê o
      * texto do arquivo selecionado e faz a chamada do método que abre uma nova
      * aba para a edição.
@@ -299,32 +314,60 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_saveActionPerformed
 
     private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed
-        Path path = Paths.get(directory_path + "src/main/webapp");
-        try {
-            if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-                console.setText(projectBuilder.compileSimpleProject(directory_path));
-            } else {
-                console.setText(projectBuilder.compileWebProject(directory_path));
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Path path = Paths.get(directory_path + "src/main/webapp");
+                try {
+                    if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+                        console.setText(projectBuilder.compileSimpleProject(directory_path));
+                    } else {
+                        console.setText(projectBuilder.compileWebProject(directory_path));
+                    }
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
             }
-        } catch (IOException ex) {
-            console.setText(ex.getMessage());
-        }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
     }//GEN-LAST:event_compileActionPerformed
 
     private void runProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runProjectActionPerformed
-        try {
-            console.setText(projectBuilder.executeJar(directory_path));
-        } catch (IOException ex) {
-            console.setText(ex.getMessage());
-        }
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    console.setText(projectBuilder.executeJar(directory_path));
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
+            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
     }//GEN-LAST:event_runProjectActionPerformed
 
     private void generateWarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateWarActionPerformed
-        try {
-            console.setText(projectBuilder.buildWebProject(directory_path));
-        } catch (IOException ex) {
-            console.setText(ex.getMessage());
-        }
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    console.setText(projectBuilder.buildWebProject(directory_path));
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
+            }
+        };
+        
+        Thread thread = new Thread(runnable);
+        thread.start();
+        
     }//GEN-LAST:event_generateWarActionPerformed
 
 

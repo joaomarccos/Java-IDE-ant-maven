@@ -6,7 +6,7 @@
   <property name="src.dir" location="src" />
   <property name="lib.dir" location="lib" />
 
-  <path id="libs">
+  <path id="lib">
     <fileset dir="${lib.dir}" includes="*.jar" />
   </path>
   
@@ -30,25 +30,14 @@
     <copy todir="${build.dir}">
       <fileset dir="${src.dir}/resources" includes="**/*"/>
     </copy>          
-    <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="true" classpathref="libs"/>    
+    <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="true" classpathref="lib"/>            
   </target>
   
-  <target name="buildWeb" depends="clear">
-    <copy todir="${build.dir}/webapp">
-      <fileset dir="${src.dir}/webapp" includes="**/*" />
-    </copy>
-    <mkdir dir="${build.dir}/classes" />
-    <javac srcdir="${src.dir}/java" destdir="${build.dir}/classes" includeantruntime="true" classpathref="libs"/>
-    <copy todir="${build.dir}/classes">
+  <target name="buildWeb" depends="clear">    
+    <javac srcdir="${src.dir}/main/java" destdir="${build.dir}" includeantruntime="true" classpathref="lib"/>    
+    <copy todir="${build.dir}">
       <fileset dir="${src.dir}/resources" includes="**/*" />
-    </copy>
-    <copy todir="${build.dir}/webapp/WEB-INF/classes">
-      <fileset dir="${build.dir}/classes" includes="**/*" />
     </copy>    
-    <copy todir="${build.dir}/webapp/WEB-INF/lib">
-      <fileset dir="lib" includes="*.jar"></fileset>
-    </copy>
-      
   </target>
 
   <target name="packageJar" depends="build">
@@ -59,13 +48,13 @@
     </jar>
   </target>
   
-  <target name="packageWar">
+  <target name="packageWar" depends="buildWeb">
     <war destfile="${project.name}_${data}_${hora}.war" webxml="${src.dir}/main/webapp/WEB-INF/web.xml" update="true">
         <fileset dir="${src.dir}/main/webapp">
             <include name="**/*.*"/>
         </fileset>
-        <lib dir="lib"/>
-        <classes dir="target"/>
+        <lib dir="${lib.dir}"/>
+        <classes dir="${build.dir}"/>
     </war>
   </target>
 
