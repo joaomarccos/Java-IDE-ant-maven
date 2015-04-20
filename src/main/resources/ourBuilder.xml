@@ -2,90 +2,114 @@
 
 <project  name="IDE-Ant" basedir="." default="criarTarget">
 
-  <property name="build.dir" location="target" />
-  <property name="src.dir" location="src" />
-  <property name="lib.dir" location="lib" />
+    <property file="ourBuilder.properties"/>
+    <property name="build.dir" location="target" />
+    <property name="src.dir" location="src" />
+    <property name="lib.dir" location="lib" />
 
-  <path id="lib">
-    <fileset dir="${lib.dir}" includes="*.jar" />
-  </path>
+    <path id="lib">
+        <fileset dir="${lib.dir}" includes="*.jar" />
+    </path>
   
-  <tstamp>
-    <format property="hora" pattern="hh-mm-ss" locale="br"/>
-    <format property="data" pattern="dd-MM-yyyy" locale="br"/>
-  </tstamp>
+    <tstamp>
+        <format property="hora" pattern="hh-mm-ss" locale="br"/>
+        <format property="data" pattern="dd-MM-yyyy" locale="br"/>
+    </tstamp>
 
-  <target name="criarTarget">
-    <mkdir dir="${build.dir}" />
-  </target>
+    <target name="criarTarget">
+        <mkdir dir="${build.dir}" />
+    </target>
   
-  <target name="clear" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
-    <delete dir="${build.dir}" />          
-    <mkdir dir="${build.dir}" />
-    <mkdir dir="${src.dir}/resources"/>
-    <mkdir dir="${lib.dir}"/>
-  </target>
+    <target name="clear" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
+        <delete dir="${build.dir}" />          
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${src.dir}/resources"/>
+        <mkdir dir="${lib.dir}"/>
+    </target>
 
-  <target name="clearWeb" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
-    <delete dir="${build.dir}" />          
-    <mkdir dir="${build.dir}" />
-    <mkdir dir="${build.dir}/classes" />
-    <mkdir dir="${src.dir}/resources"/>
-    <mkdir dir="${lib.dir}"/>
-  </target>
+    <target name="clearWeb" description="Apaga todos os arquivos existentes na pasta Target" depends="criarTarget">
+        <delete dir="${build.dir}" />          
+        <delete>
+            <fileset dir="." includes="*.war"/>
+        </delete>
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.dir}/classes" />
+        <mkdir dir="${src.dir}/resources"/>
+        <mkdir dir="${lib.dir}"/>
+    </target>
 
-  <target name="build" description="Compila classes java" depends="clear">
-    <copy todir="${build.dir}">
-      <fileset dir="${src.dir}/resources" includes="**/*"/>
-    </copy>          
-    <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="true" classpathref="lib"/>            
-  </target>
+    <target name="build" description="Compila classes java" depends="clear">
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}/resources" includes="**/*"/>
+        </copy>          
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="true" classpathref="lib"/>            
+    </target>
   
-  <target name="buildWeb" depends="clearWeb">    
-    <javac srcdir="${src.dir}/main/java" destdir="${build.dir}/classes" includeantruntime="true" classpathref="lib"/>    
-    <copy todir="${build.dir}/classes">
-      <fileset dir="${src.dir}/resources" includes="**/*" />
-    </copy>    
-  </target>
+    <target name="buildWeb" depends="clearWeb">    
+        <javac srcdir="${src.dir}/main/java" destdir="${build.dir}/classes" includeantruntime="true" classpathref="lib"/>    
+        <copy todir="${build.dir}/classes">
+            <fileset dir="${src.dir}/resources" includes="**/*" />
+        </copy>    
+    </target>
 
-  <target name="packageJar" depends="build">
-    <jar destfile="${project.name}.jar" update="true" basedir="${build.dir}">
-      <manifest>
-        <attribute name="Main-class" value="${Main}" />        
-      </manifest>      
-    </jar>
-  </target>
+    <target name="packageJar" depends="build">
+        <jar destfile="${project.name}.jar" update="true" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-class" value="${Main}" />        
+            </manifest>      
+        </jar>
+    </target>
   
-  <target name="packageWar" depends="buildWeb">
-    <war destfile="${project.name}_${data}_${hora}.war" webxml="${src.dir}/main/webapp/WEB-INF/web.xml" update="true">
-        <fileset dir="${src.dir}/main/webapp">
-            <include name="**/*.*"/>
-        </fileset>
-        <lib dir="${lib.dir}"/>
-        <classes dir="${build.dir}/classes"/>
-    </war>
-  </target>
+    <target name="packageWar" depends="buildWeb">
+        <war destfile="${project.name}.war" webxml="${src.dir}/main/webapp/WEB-INF/web.xml" update="true">
+            <fileset dir="${src.dir}/main/webapp">
+                <include name="**/*.*"/>
+            </fileset>
+            <lib dir="${lib.dir}"/>
+            <classes dir="${build.dir}/classes"/>
+        </war>
+    </target>
 
-  <target name="executeJar">
-    <java jar="${project.name}.jar" fork="true"/>
-  </target>
+    <target name="executeJar">
+        <java jar="${project.name}.jar" fork="true"/>
+    </target>
 
-  <target name="deploy" depends="packageWar">
-    <copy todir="${server}">
-      <fileset dir="${build.dir}/" includes="webapp/**/*"/>
-    </copy>
-  </target>
+    <target name="implantar" depends="packageWar">    
+        <copy todir="${tomcat.home}/webapps">
+            <fileset dir="." includes="*.war"/>
+        </copy>
+    </target>
     
-  <target name="javadoc">
-    <mkdir dir="site" />
-    <mkdir dir="tmp" />
-    <copy todir="tmp">
-      <fileset dir="${src.dir}">
-        <include name="**/*.java" />
-      </fileset>
-    </copy>
-    <javadoc destdir="site" sourcepath="tmp"/>
-    <delete dir="tmp" />
-  </target>
+    <target name="javadoc">
+        <mkdir dir="site" />
+        <mkdir dir="tmp" />
+        <copy todir="tmp">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java" />
+            </fileset>
+        </copy>
+        <javadoc destdir="site" sourcepath="tmp"/>
+        <delete dir="tmp" />
+    </target>
+
+    <target name="tomcat-start">
+        <java classname="org.apache.catalina.startup.Bootstrap" failonerror="true" fork="true">
+            <classpath path="${tomcat.home}/bin/bootstrap.jar:${tomcat.home}/bin/tomcat-juli.jar" />
+            <jvmarg value="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager" />
+            <jvmarg value="-Djava.util.logging.config.file=${tomcat.home}/conf/logging.properties" />
+            <jvmarg value="-Dcatalina.home=${tomcat.home}" />
+            <jvmarg value="-Dcatalina.base=${tomcat.home}" />
+            <jvmarg value="-Djava.io.tmpdir=${tomcat.home}/temp" />
+            <arg line="start" />
+        </java>
+    </target>
+ 
+    <target name="tomcat-stop">
+        <java classname="org.apache.catalina.startup.Bootstrap" fork="true">
+            <classpath path="${tomcat.home}/bin/bootstrap.jar:${tomcat.home}/bin/tomcat-juli.jar" />
+            <jvmarg value="-Dcatalina.home=${tomcat.home}" />
+            <arg line="stop" />
+        </java>
+    </target>
   
 </project>

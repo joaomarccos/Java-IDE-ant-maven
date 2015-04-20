@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Properties;
 import java.util.Scanner;
 
 /**
@@ -14,7 +15,9 @@ import java.util.Scanner;
 public class ProjectBuilder {
     
     private static final String BUILDXMLNAME = "ourBuilder.xml";
+    private static final String BUILDXML_PROPERTIE = "ourBuilder.properties";
     private static final Path PATHBUILDXML = Paths.get("./src/main/resources/"+BUILDXMLNAME);    
+    private static final Path PATHBUILDPROP = Paths.get("./src/main/resources/"+BUILDXML_PROPERTIE);    
     private String ourBuildPath;
 
     /**
@@ -76,6 +79,51 @@ public class ProjectBuilder {
     }
     
     /**
+     * Generate a war and deploy on web container (tomcat)
+     * @param path - path of the project
+     * @return - String containing a sucess or error message related-project
+     * @throws java.io.IOException
+     */
+    public String deployWebProject(String path) throws IOException {
+        String command = "ant -buildfile \""+ourBuildPath+"\" -Dproject.name="+getProjectName(path)+" implantar";
+        return runAntCommand(command);                
+    }
+    
+    /**
+     * Start tomcat container
+     * @param path
+     * @return
+     * @throws IOException 
+     */
+    public String startTomCat(String path) throws IOException {
+        String command = "ant -buildfile \""+ourBuildPath+"\" tomcat-start";
+        return runAntCommand(command);                
+    }
+    
+    /**
+     * Stop tomcat container
+     * @param path
+     * @return
+     * @throws IOException 
+     */
+    public String stopTomCat(String path) throws IOException {
+        String command = "ant -buildfile \""+ourBuildPath+"\" tomcat-stop";
+        return runAntCommand(command);                
+    }
+    
+    /**
+     * Configure path from tomcat
+     * @param path
+     * @throws IOException 
+     */
+    public void configureTomcatHome(String path) throws IOException{
+        Properties prop = new Properties();
+        Path p = Paths.get("./src/main/resources/ourBuilder.properties");        
+        prop.setProperty("tomcat.home", path);                
+        prop.store(Files.newOutputStream(p), "Configuração tomcat.home");                        
+    }
+    
+    /**
      * Run a command. In other words creates a process and takes care of manage it.
      * @param command
      * @return - Out of the command
@@ -109,6 +157,8 @@ public class ProjectBuilder {
     public void copyBuildXmlToProjectPath(String path) throws IOException{
         Path projectDirectory = Paths.get(path+"/"+BUILDXMLNAME);                        
         this.ourBuildPath = Files.copy(PATHBUILDXML, projectDirectory, StandardCopyOption.REPLACE_EXISTING).toString();
+        projectDirectory = Paths.get(path+"/"+BUILDXML_PROPERTIE);
+        Files.copy(PATHBUILDPROP, projectDirectory, StandardCopyOption.REPLACE_EXISTING);        
     }
     
     private String getProjectName(String path){

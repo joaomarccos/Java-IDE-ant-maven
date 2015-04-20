@@ -72,7 +72,7 @@ public class Editor extends javax.swing.JFrame {
         codes.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
         this.text = codes;
         this.codeArea = new JScrollPane(codes);
-        this.codeArea.setFont(Font.getFont(Font.MONOSPACED));        
+        this.codeArea.setFont(Font.getFont(Font.MONOSPACED));
         sourceEditor.addTab(name, codeArea);
         sourceEditor.setSelectedComponent(codeArea);
         int i = sourceEditor.getSelectedIndex();
@@ -103,6 +103,11 @@ public class Editor extends javax.swing.JFrame {
         runProject = new javax.swing.JMenuItem();
         generateJar = new javax.swing.JMenuItem();
         generateWar = new javax.swing.JMenuItem();
+        tomcatMenu = new javax.swing.JMenu();
+        configureTomcat = new javax.swing.JMenuItem();
+        deploy = new javax.swing.JMenuItem();
+        startTomCat = new javax.swing.JMenuItem();
+        stopTomCat = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ant-Ide");
@@ -163,7 +168,7 @@ public class Editor extends javax.swing.JFrame {
         menuRun.add(compile);
 
         runProject.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        runProject.setText("Run Project (jar)");
+        runProject.setText("Run Project");
         runProject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProjectActionPerformed(evt);
@@ -188,6 +193,46 @@ public class Editor extends javax.swing.JFrame {
             }
         });
         menuRun.add(generateWar);
+
+        tomcatMenu.setText("Tomcat");
+
+        configureTomcat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, java.awt.event.InputEvent.CTRL_MASK));
+        configureTomcat.setText("Configure");
+        configureTomcat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                configureTomcatActionPerformed(evt);
+            }
+        });
+        tomcatMenu.add(configureTomcat);
+
+        deploy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, java.awt.event.InputEvent.CTRL_MASK));
+        deploy.setText("Deploy Web Project");
+        deploy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deployActionPerformed(evt);
+            }
+        });
+        tomcatMenu.add(deploy);
+
+        startTomCat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, java.awt.event.InputEvent.CTRL_MASK));
+        startTomCat.setText("Start Server");
+        startTomCat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startTomCatActionPerformed(evt);
+            }
+        });
+        tomcatMenu.add(startTomCat);
+
+        stopTomCat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, java.awt.event.InputEvent.CTRL_MASK));
+        stopTomCat.setText("Stop Server");
+        stopTomCat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopTomCatActionPerformed(evt);
+            }
+        });
+        tomcatMenu.add(stopTomCat);
+
+        menuRun.add(tomcatMenu);
 
         menuBar.add(menuRun);
 
@@ -269,7 +314,13 @@ public class Editor extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int caixa = JOptionPane.showConfirmDialog(this, "Você deseja realmente sair?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if (caixa == JOptionPane.YES_OPTION) {
-            dispose();
+            try {
+                projectBuilder.stopTomCat(directory_path);
+            } catch (IOException ex) {
+                Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                dispose();
+            }
         }
     }//GEN-LAST:event_formWindowClosing
     /**
@@ -320,7 +371,7 @@ public class Editor extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jTree1MouseClicked
-    public void save(){
+    public void save() {
         String caminho = listOftabsOpen.get(sourceEditor.getSelectedIndex()).toString();
         File arquivo = new File(caminho);
         try {
@@ -332,7 +383,7 @@ public class Editor extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo!", "ERRO", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         save();
     }//GEN-LAST:event_saveActionPerformed
@@ -360,12 +411,20 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_compileActionPerformed
 
     private void runProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runProjectActionPerformed
-        Runnable runnable = new Runnable() {
+        console.setText("Executando... Aguarde!");
+        Runnable runnable;
+        runnable = new Runnable() {
 
             @Override
             public void run() {
+                Path path = Paths.get(directory_path + "/src/main/webapp");
                 try {
-                    console.setText(projectBuilder.executeJar(directory_path));
+                    if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+                        console.setText(projectBuilder.executeJar(directory_path));
+                    } else {
+                        console.setText(projectBuilder.deployWebProject(directory_path));
+                        projectBuilder.startTomCat(directory_path);
+                    }
                 } catch (IOException ex) {
                     console.setText(ex.getMessage());
                 }
@@ -388,16 +447,80 @@ public class Editor extends javax.swing.JFrame {
                 }
             }
         };
-        
+
         Thread thread = new Thread(runnable);
         thread.start();
-        
+
     }//GEN-LAST:event_generateWarActionPerformed
+
+    private void deployActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deployActionPerformed
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    console.setText(projectBuilder.deployWebProject(directory_path));
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
+            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+    }//GEN-LAST:event_deployActionPerformed
+
+    private void startTomCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startTomCatActionPerformed
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    console.setText(projectBuilder.startTomCat(directory_path));
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
+            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }//GEN-LAST:event_startTomCatActionPerformed
+
+    private void stopTomCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopTomCatActionPerformed
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    console.setText(projectBuilder.stopTomCat(directory_path));
+                } catch (IOException ex) {
+                    console.setText(ex.getMessage());
+                }
+            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }//GEN-LAST:event_stopTomCatActionPerformed
+
+    private void configureTomcatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configureTomcatActionPerformed
+        String path = JOptionPane.showInputDialog(this, "Entry tomcat.home path", "tomcat.home Configure", JOptionPane.OK_CANCEL_OPTION);
+        try {
+            projectBuilder.configureTomcatHome(path);
+            console.setText("tomcat.home configured for "+path);
+        } catch (IOException ex) {
+            Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_configureTomcatActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem compile;
+    private javax.swing.JMenuItem configureTomcat;
     private javax.swing.JTextArea console;
+    private javax.swing.JMenuItem deploy;
     private javax.swing.JMenuItem generateJar;
     private javax.swing.JMenuItem generateWar;
     private javax.swing.JScrollPane jScrollPane1;
@@ -411,5 +534,8 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JMenuItem runProject;
     private javax.swing.JMenuItem save;
     private javax.swing.JTabbedPane sourceEditor;
+    private javax.swing.JMenuItem startTomCat;
+    private javax.swing.JMenuItem stopTomCat;
+    private javax.swing.JMenu tomcatMenu;
     // End of variables declaration//GEN-END:variables
 }
