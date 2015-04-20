@@ -8,7 +8,6 @@ package br.com.ifpb.praticas.ide.ant.GUI;
 import br.com.ifpb.praticas.ide.ant.backend.ProjectBuilder;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -77,7 +76,7 @@ public class Editor extends javax.swing.JFrame {
         sourceEditor.addTab(name, codeArea);
         sourceEditor.setSelectedComponent(codeArea);
         int i = sourceEditor.getSelectedIndex();
-        sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor, listOftabsOpen));
+        sourceEditor.setTabComponentAt(i, new ButtonTabComponent(sourceEditor, listOftabsOpen, this));
     }
 
     /**
@@ -321,8 +320,7 @@ public class Editor extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jTree1MouseClicked
-
-    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+    public void save(){
         String caminho = listOftabsOpen.get(sourceEditor.getSelectedIndex()).toString();
         File arquivo = new File(caminho);
         try {
@@ -333,6 +331,10 @@ public class Editor extends javax.swing.JFrame {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo!", "ERRO", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        save();
     }//GEN-LAST:event_saveActionPerformed
 
     private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed

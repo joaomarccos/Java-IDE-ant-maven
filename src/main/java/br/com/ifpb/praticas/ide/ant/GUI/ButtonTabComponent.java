@@ -45,8 +45,9 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class ButtonTabComponent extends JPanel {
     private final JTabbedPane pane;
     private final ArrayList list;
+    private final Editor ed;
 
-    public ButtonTabComponent(final JTabbedPane pane, final ArrayList list) {
+    public ButtonTabComponent(final JTabbedPane pane, final ArrayList list, Editor editor) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
         if (pane == null) {
@@ -54,6 +55,7 @@ public class ButtonTabComponent extends JPanel {
         }
         this.pane = pane;
         this.list = list;
+        this.ed = editor;
         setOpaque(false);
         
         //make JLabel read titles from JTabbedPane
@@ -99,6 +101,10 @@ public class ButtonTabComponent extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
+            int caixa = JOptionPane.showConfirmDialog(this, "Você deseja salvar as alterações?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (caixa == JOptionPane.YES_OPTION) {
+                ed.save();
+            }
             int i = pane.indexOfTabComponent(ButtonTabComponent.this);
             if (i != -1) {
                 pane.remove(i);
