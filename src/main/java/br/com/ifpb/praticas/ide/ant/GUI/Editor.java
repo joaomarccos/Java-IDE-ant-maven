@@ -10,7 +10,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -37,6 +39,7 @@ public class Editor extends javax.swing.JFrame {
     private String directory_path;
     private ArrayList listOftabsOpen;
     private ProjectBuilder projectBuilder;
+    private JTextArea text;
 
     /**
      * Creates new form Editor
@@ -66,8 +69,9 @@ public class Editor extends javax.swing.JFrame {
         JTextArea codes = new JTextArea(code);
         codes.setBackground(new Color(18, 30, 49));
         codes.setForeground(Color.white);
-        codes.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13)); 
         codes.setCaretColor(Color.WHITE);
+        codes.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+        this.text = codes;
         this.codeArea = new JScrollPane(codes);
         this.codeArea.setFont(Font.getFont(Font.MONOSPACED));        
         sourceEditor.addTab(name, codeArea);
@@ -319,7 +323,16 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_jTree1MouseClicked
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-
+        String caminho = listOftabsOpen.get(sourceEditor.getSelectedIndex()).toString();
+        File arquivo = new File(caminho);
+        try {
+            BufferedWriter bf = new BufferedWriter(new FileWriter(arquivo));
+            bf.flush();
+            bf.write(text.getText());
+            bf.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo!", "ERRO", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveActionPerformed
 
     private void compileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileActionPerformed
