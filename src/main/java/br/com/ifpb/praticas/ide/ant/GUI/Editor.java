@@ -8,6 +8,7 @@ package br.com.ifpb.praticas.ide.ant.GUI;
 import br.com.ifpb.praticas.ide.ant.backend.ProjectBuilder;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,8 @@ public class Editor extends javax.swing.JFrame {
         JTextArea codes = new JTextArea(code);
         codes.setBackground(new Color(18, 30, 49));
         codes.setForeground(Color.white);
-        codes.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));        
+        codes.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13)); 
+        codes.setCaretColor(Color.WHITE);
         this.codeArea = new JScrollPane(codes);
         this.codeArea.setFont(Font.getFont(Font.MONOSPACED));        
         sourceEditor.addTab(name, codeArea);
