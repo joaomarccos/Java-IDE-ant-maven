@@ -177,6 +177,14 @@
                 <Property name="text" type="java.lang.String" value="Git"/>
               </Properties>
               <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="init">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Init"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="initActionPerformed"/>
+                  </Events>
+                </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="addModifications">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Add Modifications"/>
