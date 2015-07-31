@@ -108,6 +108,16 @@ public class Editor extends javax.swing.JFrame {
         deploy = new javax.swing.JMenuItem();
         startTomCat = new javax.swing.JMenuItem();
         stopTomCat = new javax.swing.JMenuItem();
+        mavenMenu = new javax.swing.JMenu();
+        mavenCompile = new javax.swing.JMenuItem();
+        mavenClean = new javax.swing.JMenuItem();
+        mavenInstall = new javax.swing.JMenuItem();
+        mavenPackage = new javax.swing.JMenuItem();
+        gitMenu = new javax.swing.JMenu();
+        addModifications = new javax.swing.JMenuItem();
+        commit = new javax.swing.JMenuItem();
+        pull = new javax.swing.JMenuItem();
+        push = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ant-Ide");
@@ -233,6 +243,78 @@ public class Editor extends javax.swing.JFrame {
         tomcatMenu.add(stopTomCat);
 
         menuRun.add(tomcatMenu);
+
+        mavenMenu.setText("Maven");
+
+        mavenCompile.setText("Compile");
+        mavenCompile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mavenCompileActionPerformed(evt);
+            }
+        });
+        mavenMenu.add(mavenCompile);
+
+        mavenClean.setText("Clean");
+        mavenClean.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mavenCleanActionPerformed(evt);
+            }
+        });
+        mavenMenu.add(mavenClean);
+
+        mavenInstall.setText("Install");
+        mavenInstall.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mavenInstallActionPerformed(evt);
+            }
+        });
+        mavenMenu.add(mavenInstall);
+
+        mavenPackage.setText("Package");
+        mavenPackage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mavenPackageActionPerformed(evt);
+            }
+        });
+        mavenMenu.add(mavenPackage);
+
+        menuRun.add(mavenMenu);
+
+        gitMenu.setText("Git");
+
+        addModifications.setText("Add Modifications");
+        addModifications.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addModificationsActionPerformed(evt);
+            }
+        });
+        gitMenu.add(addModifications);
+
+        commit.setText("Commit");
+        commit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commitActionPerformed(evt);
+            }
+        });
+        gitMenu.add(commit);
+
+        pull.setText("Pull");
+        pull.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pullActionPerformed(evt);
+            }
+        });
+        gitMenu.add(pull);
+
+        push.setText("Push");
+        push.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pushActionPerformed(evt);
+            }
+        });
+        gitMenu.add(push);
+
+        menuRun.add(gitMenu);
 
         menuBar.add(menuRun);
 
@@ -514,23 +596,89 @@ public class Editor extends javax.swing.JFrame {
             Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_configureTomcatActionPerformed
+    /**
+     * Add all files in Stage Area.
+     * @param evt 
+     */
+    private void addModificationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addModificationsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addModificationsActionPerformed
+    /**
+     * Commit modifications.
+     * @param evt 
+     */
+    private void commitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitActionPerformed
+        String msg = JOptionPane.showInputDialog(this, "Entry commit message:", "Message for commit", JOptionPane.OK_CANCEL_OPTION);
+    }//GEN-LAST:event_commitActionPerformed
+    /**
+     * Makes pull from the online repository.
+     * @param evt 
+     */
+    private void pullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pullActionPerformed
+    /**
+     * Makes push to online repository.
+     * @param evt 
+     */
+    private void pushActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pushActionPerformed
+    /**
+     * Compile project with maven.
+     * @param evt 
+     */
+    private void mavenCompileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenCompileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mavenCompileActionPerformed
+    /**
+     * Clean the files and directories generated by Maven during its build.
+     * @param evt 
+     */
+    private void mavenCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenCleanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mavenCleanActionPerformed
+    /**
+     * Generate the project deploy package.
+     * @param evt 
+     */
+    private void mavenInstallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenInstallActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mavenInstallActionPerformed
+    /**
+     * Packaging the project as defined in the description.
+     * @param evt 
+     */
+    private void mavenPackageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenPackageActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mavenPackageActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem addModifications;
+    private javax.swing.JMenuItem commit;
     private javax.swing.JMenuItem compile;
     private javax.swing.JMenuItem configureTomcat;
     private javax.swing.JTextArea console;
     private javax.swing.JMenuItem deploy;
     private javax.swing.JMenuItem generateJar;
     private javax.swing.JMenuItem generateWar;
+    private javax.swing.JMenu gitMenu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTree jTree1;
     private java.awt.Label labelConsole;
+    private javax.swing.JMenuItem mavenClean;
+    private javax.swing.JMenuItem mavenCompile;
+    private javax.swing.JMenuItem mavenInstall;
+    private javax.swing.JMenu mavenMenu;
+    private javax.swing.JMenuItem mavenPackage;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenu menuRun;
     private javax.swing.JMenuItem openProject;
+    private javax.swing.JMenuItem pull;
+    private javax.swing.JMenuItem push;
     private javax.swing.JMenuItem runProject;
     private javax.swing.JMenuItem save;
     private javax.swing.JTabbedPane sourceEditor;
