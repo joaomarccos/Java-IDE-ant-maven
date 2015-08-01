@@ -647,7 +647,15 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void pullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullActionPerformed
-        // TODO add your handling code here:
+        Runnable runnable = new Runnable(){
+            
+             @Override
+             public void run() {
+                 console.setText(pmf.gitPull());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_pullActionPerformed
     
     /**
@@ -655,7 +663,15 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void pushActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushActionPerformed
-        // TODO add your handling code here:
+        Runnable runnable = new Runnable(){
+            
+             @Override
+             public void run() {
+                 console.setText(pmf.gitPush());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_pushActionPerformed
     
     /**
