@@ -40,6 +40,7 @@ public class Editor extends javax.swing.JFrame {
     private ArrayList listOftabsOpen;
     private ProjectBuilder projectBuilder;
     private JTextArea text;
+    private ProjectManagerFacade pmf;
 
     /**
      * Creates new form Editor
@@ -428,6 +429,7 @@ public class Editor extends javax.swing.JFrame {
 
         if (result == JFileChooser.APPROVE_OPTION) {
             directory_path = fc.getSelectedFile().getAbsolutePath();
+            pmf = new ProjectManagerFacade(directory_path);
             jTree1.setModel(new TreeOfDirectories(directory_path));
             try {
                 this.projectBuilder.copyBuildXmlToProjectPath(directory_path);
@@ -648,7 +650,6 @@ public class Editor extends javax.swing.JFrame {
 
              @Override
              public void run() {
-                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
                  console.setText(pmf.compileProject());
              }
          };
@@ -665,7 +666,6 @@ public class Editor extends javax.swing.JFrame {
 
              @Override
              public void run() {
-                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
                  console.setText(pmf.cleanProject());
              }
          };
@@ -682,7 +682,6 @@ public class Editor extends javax.swing.JFrame {
 
              @Override
              public void run() {
-                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
                  console.setText(pmf.installProject());
              }
          };
@@ -699,7 +698,6 @@ public class Editor extends javax.swing.JFrame {
 
              @Override
              public void run() {
-                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
                  console.setText(pmf.packageProject());
              }
          };
