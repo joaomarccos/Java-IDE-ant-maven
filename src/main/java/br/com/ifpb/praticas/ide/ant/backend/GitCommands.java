@@ -60,6 +60,7 @@ public enum GitCommands implements Processable {
 
     public GitCommands setMessage(String in) {
         this.message = in;
+        this.message = this.message.replaceAll(" ", "_");
         return this;
     }
 
