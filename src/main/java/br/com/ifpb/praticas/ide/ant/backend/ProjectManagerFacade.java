@@ -34,8 +34,24 @@ public class ProjectManagerFacade {
         return mvnController.install(projectPath);
     }
     
-    public String gitPush(){
-        return gitController.push(projectPath);
+    public String gitPush(String password){
+        return gitController.push(projectPath, password);
+    }
+    
+    public String gitPull(String password){
+        return gitController.pull(projectPath, password);
+    }
+    
+    public String gitAdd(){
+        return gitController.add(projectPath);
+    }
+    
+    public String gitCommit(String message){
+        return gitController.commit(projectPath, message);
+    }
+    
+    public String gitInit(){
+        return gitController.init(projectPath);
     }
     
 }

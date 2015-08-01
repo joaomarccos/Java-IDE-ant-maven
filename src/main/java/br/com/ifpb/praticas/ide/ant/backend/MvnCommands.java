@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public enum MvnCommands implements Processable {
 
-    INSTALL {
+    INSTALL {                
                 @Override
                 public String execute() throws IOException {
                     return processController.executeCommand("mvn -f \"" + this.path + "/pom.xml\" install");

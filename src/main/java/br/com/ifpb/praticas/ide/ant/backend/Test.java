@@ -7,7 +7,7 @@ package br.com.ifpb.praticas.ide.ant.backend;
 public class Test {
     public static void main(String[] args) {
         ProjectManagerFacade pmf = new ProjectManagerFacade("/home/joaomarcos/NetBeansProjects/IDE-ant");
-        System.out.println(pmf.cleanProject());
+        System.out.println(pmf.gitPull("123"));
+                
     }
-    
 }
