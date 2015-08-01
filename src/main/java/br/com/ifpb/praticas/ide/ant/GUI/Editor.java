@@ -614,7 +614,15 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void addModificationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addModificationsActionPerformed
-        // TODO add your handling code here:
+         Runnable runnable = new Runnable(){
+
+             @Override
+             public void run() {
+                 console.setText(pmf.gitAdd());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_addModificationsActionPerformed
     
     /**
@@ -622,7 +630,16 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void commitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitActionPerformed
-        String msg = JOptionPane.showInputDialog(this, "Entry commit message:", "Message for commit", JOptionPane.OK_CANCEL_OPTION);
+        final String msg = JOptionPane.showInputDialog(this, "Entry commit message:", "Message for commit", JOptionPane.OK_CANCEL_OPTION);
+        Runnable runnable = new Runnable(){
+            
+             @Override
+             public void run() {
+                 console.setText(pmf.gitCommit(msg));
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_commitActionPerformed
     
     /**
@@ -710,7 +727,15 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void initActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initActionPerformed
-        // TODO add your handling code here:
+        Runnable runnable = new Runnable(){
+
+             @Override
+             public void run() {
+                 console.setText(pmf.gitInit());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_initActionPerformed
 
 
