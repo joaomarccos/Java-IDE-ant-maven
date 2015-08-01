@@ -397,7 +397,7 @@ public class Editor extends javax.swing.JFrame {
         int caixa = JOptionPane.showConfirmDialog(this, "Você deseja realmente sair?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if (caixa == JOptionPane.YES_OPTION) {
             try {
-                projectBuilder.stopTomCat(directory_path);
+                projectBuilder.stopTomCat();
             } catch (IOException ex) {
                 Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -478,9 +478,9 @@ public class Editor extends javax.swing.JFrame {
                 Path path = Paths.get(directory_path + "src/main/webapp");
                 try {
                     if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-                        console.setText(projectBuilder.compileSimpleProject(directory_path));
+                        console.setText(projectBuilder.compileSimpleProject());
                     } else {
-                        console.setText(projectBuilder.compileWebProject(directory_path));
+                        console.setText(projectBuilder.compileWebProject());
                     }
                 } catch (IOException ex) {
                     console.setText(ex.getMessage());
@@ -505,7 +505,7 @@ public class Editor extends javax.swing.JFrame {
                         console.setText(projectBuilder.executeJar(directory_path));
                     } else {
                         console.setText(projectBuilder.deployWebProject(directory_path));
-                        projectBuilder.startTomCat(directory_path);
+                        projectBuilder.startTomCat();
                     }
                 } catch (IOException ex) {
                     console.setText(ex.getMessage());
@@ -559,7 +559,7 @@ public class Editor extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    console.setText(projectBuilder.startTomCat(directory_path));
+                    console.setText(projectBuilder.startTomCat());
                 } catch (IOException ex) {
                     console.setText(ex.getMessage());
                 }
@@ -576,7 +576,7 @@ public class Editor extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    console.setText(projectBuilder.stopTomCat(directory_path));
+                    console.setText(projectBuilder.stopTomCat());
                 } catch (IOException ex) {
                     console.setText(ex.getMessage());
                 }

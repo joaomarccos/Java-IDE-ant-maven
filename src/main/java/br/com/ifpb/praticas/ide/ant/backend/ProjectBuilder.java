@@ -26,24 +26,22 @@ public class ProjectBuilder{
     
     /**
      * Compile a simple project opened on editor
-     *
-     * @param path - path of the project
+     *    
      * @return - String containing a sucess or error message related-project
      * @throws java.io.IOException
      */
-    public String compileSimpleProject(String path) throws IOException {                
+    public String compileSimpleProject() throws IOException {                
         String command = "ant -buildfile \""+ourBuildPath+"\" build";
         return processController.executeCommand(command);                
     }
 
     /**
      * Compile a web project opened on editor
-     *
-     * @param path - path of the project
+     *     
      * @return - String containing a sucess or error message related-project
      * @throws java.io.IOException
      */
-    public String compileWebProject(String path) throws IOException {
+    public String compileWebProject() throws IOException {
         String command = "ant -buildfile \""+ourBuildPath+"\" buildWeb";
         return processController.executeCommand(command);                
     }
@@ -99,7 +97,7 @@ public class ProjectBuilder{
      * @return
      * @throws IOException 
      */
-    public String startTomCat(String path) throws IOException {
+    public String startTomCat() throws IOException {
         String command = "ant -buildfile \""+ourBuildPath+"\" tomcat-start";
         return processController.executeCommand(command);                
     }
@@ -110,7 +108,7 @@ public class ProjectBuilder{
      * @return
      * @throws IOException 
      */
-    public String stopTomCat(String path) throws IOException {
+    public String stopTomCat() throws IOException {
         String command = "ant -buildfile \""+ourBuildPath+"\" tomcat-stop";
         return processController.executeCommand(command);                
     }
