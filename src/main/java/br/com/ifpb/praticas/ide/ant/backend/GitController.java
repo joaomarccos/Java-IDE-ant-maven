@@ -8,12 +8,12 @@ import java.io.IOException;
  */
 public class GitController {
 
-    public String push(String path, String password){
-        return execute(GitCommands.PUSH.setPath(path).setDataIn(password));
+    public String push(String path){
+        return execute(GitCommands.PUSH.setPath(path));
     }
     
-    public String pull(String path, String password){
-        return execute(GitCommands.PULL.setPath(path).setDataIn(password));
+    public String pull(String path){
+        return execute(GitCommands.PULL.setPath(path));
     }
     
     public String init(String path){
@@ -25,7 +25,7 @@ public class GitController {
     }
     
     public String commit(String path, String message){
-        return execute(GitCommands.COMMIT.setPath(path).setDataIn(message));
+        return execute(GitCommands.COMMIT.setPath(path).setMessage(message));
     }
     
     private String execute(GitCommands command){

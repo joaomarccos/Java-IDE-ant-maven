@@ -34,12 +34,12 @@ public class ProjectManagerFacade {
         return mvnController.install(projectPath);
     }
     
-    public String gitPush(String password){
-        return gitController.push(projectPath, password);
+    public String gitPush(){
+        return gitController.push(projectPath);
     }
     
-    public String gitPull(String password){
-        return gitController.pull(projectPath, password);
+    public String gitPull(){
+        return gitController.pull(projectPath);
     }
     
     public String gitAdd(){
