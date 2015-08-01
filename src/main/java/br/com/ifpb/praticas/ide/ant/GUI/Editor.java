@@ -6,6 +6,7 @@
 package br.com.ifpb.praticas.ide.ant.GUI;
 
 import br.com.ifpb.praticas.ide.ant.backend.ProjectBuilder;
+import br.com.ifpb.praticas.ide.ant.backend.ProjectManagerFacade;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -643,7 +644,16 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void mavenCompileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenCompileActionPerformed
-        
+         Runnable runnable = new Runnable(){
+
+             @Override
+             public void run() {
+                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
+                 console.setText(pmf.compileProject());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_mavenCompileActionPerformed
     
     /**
@@ -651,7 +661,16 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void mavenCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenCleanActionPerformed
-        // TODO add your handling code here:
+        Runnable runnable = new Runnable(){
+
+             @Override
+             public void run() {
+                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
+                 console.setText(pmf.cleanProject());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_mavenCleanActionPerformed
     
     /**
@@ -659,7 +678,16 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void mavenInstallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenInstallActionPerformed
-        // TODO add your handling code here:
+        Runnable runnable = new Runnable(){
+
+             @Override
+             public void run() {
+                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
+                 console.setText(pmf.installProject());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_mavenInstallActionPerformed
     
     /**
@@ -667,7 +695,16 @@ public class Editor extends javax.swing.JFrame {
      * @param evt 
      */
     private void mavenPackageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mavenPackageActionPerformed
-        // TODO add your handling code here:
+        Runnable runnable = new Runnable(){
+
+             @Override
+             public void run() {
+                 ProjectManagerFacade pmf = new ProjectManagerFacade(directory_path);
+                 console.setText(pmf.packageProject());
+             }
+         };
+         Thread thread = new Thread(runnable);
+         thread.start();
     }//GEN-LAST:event_mavenPackageActionPerformed
     
     /**
